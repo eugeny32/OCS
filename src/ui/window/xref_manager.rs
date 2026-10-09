@@ -1199,13 +1199,17 @@ fn type_text(entry: &ReferenceEntry) -> std::borrow::Cow<'static, str> {
                 _ => crate::t!("PDF"),
             }
         }
-        // The file's own kind: RCP (project) or RCS (scan).
+        // The file's own kind: RCP (project), RCS (scan) or LAS.
         RefKind::PointCloud => {
             let ext = std::path::Path::new(&entry.saved_path.replace('\\', "/"))
                 .extension()
                 .map(|e| e.to_string_lossy().to_ascii_uppercase())
                 .unwrap_or_default();
-            if ext == "RCS" { "RCS".into() } else { "RCP".into() }
+            match ext.as_str() {
+                "RCS" => "RCS".into(),
+                "LAS" => "LAS".into(),
+                _ => "RCP".into(),
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
-// -POINTCLOUDATTACH — attach a point cloud: a scan (.rcs) or a project of
-// scans (.rcp).
+// -POINTCLOUDATTACH — attach a point cloud: a scan (.rcs), a project of
+// scans (.rcp) or a LAS file (.las).
 //
 //   Path to point cloud file to attach:
 //   Specify insertion point <0,0>:      Current insertion point: X = 5.5, Y = 2, Z = 3

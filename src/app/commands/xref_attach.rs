@@ -372,6 +372,7 @@ impl OpenCADStudio {
                 async {
                     let handle = crate::sys::file_dialog()
                         .set_title(crate::t!("Select Point Cloud File").as_ref())
+                        .add_filter(crate::t!("Point Clouds").as_ref(), &["rcp", "rcs", "las"])
                         .add_filter(crate::t!("Point Cloud Project").as_ref(), &["rcp"])
                         .add_filter(crate::t!("Point Cloud Scan").as_ref(), &["rcs"])
                         .pick_file()
@@ -391,7 +392,7 @@ impl OpenCADStudio {
                             crate::t!("All Reference Files").as_ref(),
                             &[
                                 "dwg", "dxf", "pdf", "dwf", "dwfx", "dgn", "png", "jpg", "jpeg",
-                                "bmp", "tif", "tiff", "rcp", "rcs",
+                                "bmp", "tif", "tiff", "rcp", "rcs", "las",
                             ],
                         )
                         .add_filter(crate::t!("Drawing").as_ref(), &["dwg", "dxf"])
@@ -402,7 +403,7 @@ impl OpenCADStudio {
                             crate::t!("Images").as_ref(),
                             &["png", "jpg", "jpeg", "bmp", "tif", "tiff"],
                         )
-                        .add_filter(crate::t!("Point Clouds").as_ref(), &["rcp", "rcs"])
+                        .add_filter(crate::t!("Point Clouds").as_ref(), &["rcp", "rcs", "las"])
                         .pick_file()
                         .await;
                     match handle {
@@ -453,7 +454,7 @@ impl OpenCADStudio {
                         Task::none()
                     }
                     // A point cloud goes on to the Attach Point Cloud dialog.
-                    "rcp" | "rcs" => {
+                    "rcp" | "rcs" | "las" => {
                         if crate::scene::model::point_cloud::load(&path).is_none() {
                             self.command_line.push_error("All scans are not found or invalid.");
                             self.command_line.push_error("Attach point cloud failed");

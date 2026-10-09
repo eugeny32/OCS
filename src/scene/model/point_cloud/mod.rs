@@ -3,6 +3,7 @@
 // in the drawing, crops applied, coloured) are kept per placement so a
 // re-tessellate or a new render set reuses them.
 
+mod las;
 mod rcp;
 mod rcs;
 
@@ -70,6 +71,10 @@ fn decode(path: &Path) -> Option<CloudPoints> {
     let is_project = path
         .extension()
         .is_some_and(|e| e.eq_ignore_ascii_case("rcp"));
+    // A LAS file is one scan, in the file's own coordinates.
+    let is_las = path
+        .extension()
+        .is_some_and(|e| e.eq_ignore_ascii_case("las"));
     // A project lists its scans with their own transforms; a scan file
     // carries the same transform in its header.
     let stem = |p: &Path| p.file_stem().map_or_else(String::new, |s| s.to_string_lossy().into_owned());
@@ -84,7 +89,7 @@ fn decode(path: &Path) -> Option<CloudPoints> {
             })
             .collect()
     } else {
-        let scan = rcs::decode(&bytes)?;
+        let scan = if is_las { las::decode(&bytes)? } else { rcs::decode(&bytes)? };
         let transform = [scan.translation, scan.rotation, scan.scale];
         let id = scan.id.clone();
         vec![(scan, transform, stem(path), id)]
